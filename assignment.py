@@ -1,4 +1,9 @@
-import time
+
+class WrongValueError(Exception):
+    '''It is an custom Exception class
+       user wrong entered value'''
+    pass
+
 class Gst:
     '''
     It is an application which takes input 
@@ -35,45 +40,50 @@ class Gst:
             \nTo keep continue press enter 'n'\
             \nand\n To finish enter 'q'  "
             )
-        time.sleep(8)
+        __y = 0
         while self._x!="q!":
             try:    
-                self.__slab_code =int(input('\nproduct category code :-'))    
-            
+                self.__slab_code =int(input('\nproduct category code :-'))
+                if self.__slab_code <701 or self.__slab_code > 704:    
+                    raise WrongValueError    
             except ValueError :
-                    print("entered wrong value")
-                    self.__slab_code =int(input("product category code :-"))
+                    print("\n------------------------------------------------------------------")
+                    print("Please enter numerical code value as per category , Try again.....")
+                    print("------------------------------------------------------------------")
+                    __y = 1
+            except WrongValueError :
+                    print("\n-----------------------------------------------------------------------")
+                    print("You have entered a wrong code for your product category, Try again.....")
+                    print("-----------------------------------------------------------------------")
+                    __y = 1
 
-            #Conforming the code entered for product category is correct or not.
-            print("\nHave you entered correct \"product category\" code ?",end=" ")
-
-            if "y"!= input("enter [y/n] "):
-                    self.__gst_slabs = int(input("Enter code correctly \nfood-grains-701 \
-                                                \nfurniture-702 \nelectronics-703 \
-                                                \ncosmetics-704:-"))
+            
 
             # how much item user want to enter for a product category.
-            for _ in range(int(input(f"\nEnter number of item to be enter for \
-                             \n{self.__slab_codes[self.__slab_code]}:- "))):
+            if __y == 0:
+                for _ in range(int(input(f"\nEnter number of item to be enter for \
+                                \n{self.__slab_codes[self.__slab_code]}:- "))):
 
-                if self.__slab_code==701:
-                    slab_items =self.__set_gst_attri(0)
-                    key = 'food-grains'
-                elif self.__slab_code==702:
-                    slab_items =self.__set_gst_attri(5)
-                    key = 'furniture'
-                elif self.__slab_code==703:
-                    slab_items =self.__set_gst_attri(18)
-                    key = 'electronics'
-                else:
-                    slab_items =self.__set_gst_attri(28)
-                    key = 'cosmetics'
+                    if self.__slab_code==701:
+                        slab_items =self.__set_gst_attri(0)
+                        key = 'food-grains'
+                    elif self.__slab_code==702:
+                        slab_items =self.__set_gst_attri(5)
+                        key = 'furniture'
+                    elif self.__slab_code==703:
+                        slab_items =self.__set_gst_attri(18)
+                        key = 'electronics'
+                    elif self.__slab_code == 704:
+                        slab_items =self.__set_gst_attri(28)
+                        key = 'cosmetics'
+                    else:
+                        raise WrongValueError
+                    
+                    
+                    self.__gst_slab[key].append(slab_items)
                 
-                
-                self.__gst_slab[key].append(slab_items)
-            
-                
-            self._x = "q!" if input("q/n to procced :-") == ("q" or "q!" ) else self._x
+                    
+                self._x = "q!" if input("q/n to procced :-") == ("q" or "q!" ) else self._x
 
     # Method to store the the attribute of product in list.
     def __set_gst_attri(self,gst_percent):
@@ -123,9 +133,6 @@ class Gst:
                     self.__gst_slab[key][i][3]/100
 
             yield final_value,i
-
-            
-
 if __name__ == '__main__':
     gst = Gst()
     gst.set_gst_attr()
